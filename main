@@ -1,0 +1,37 @@
+let
+    // Requisição POST para obter o session_id
+    url1 = "digite a url da requisição POST",
+    XAppKey = "chave da requisição",
+    JsonPostData = "{ ""username"": ""usuario"", ""password"": ""senha"" }",
+
+    headers1 = [
+        #"Content-Type" = "application/json",
+        #"x-app-key" = XAppKey
+    ],
+    body1 = JsonPostData,
+    options1 = [
+        Headers = headers1,
+        Content = Text.ToBinary(body1)
+    ],
+    response1 = Web.Contents(url1, options1),
+    responseBody1 = Text.FromBinary(response1),
+    json1 = Json.Document(responseBody1),
+    session_id = json1[data][session_id], (observar a estrutura)
+
+    // Requisição usando o session_id para obter mais dados
+    url2 = "digite a url da requisição GET",
+    headers2 = [
+        #"x-app-key" = XAppKey,
+        #"x-auth-sid" = session_id
+    ],
+    options2 = [
+        Headers = headers2        
+    ],
+    response2 = Web.Contents(url2, options2),
+    responseBody2 = Text.FromBinary(response2),
+    json2 = Json.Document(responseBody2),
+
+    // Transformação e retorno dos dados obtidos na segunda requisição
+    result = json2[data]
+in
+    result
